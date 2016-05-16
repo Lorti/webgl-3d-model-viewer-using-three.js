@@ -40,8 +40,8 @@
         }
 
         .right {
-            bottom: 1em;
-            right: 1em;
+            top: 0;
+            right: 0;
             text-align: right;
         }
 
@@ -57,12 +57,11 @@
         <p>Low-Poly Croupière<p>
         <p><a href="https://manu.ninja/" target="_top">manu.ninja</a></p>
     </div>
-<!--
-    <div class="right">
-        <p><a href="http://threejs.org/" target="_top">three.js</a></p>
-        <p><a href="https://github.com/Lorti/webgl-3d-model-viewer-using-three.js" target="_top">GitHub</a></p>
-    </div>
--->
+
+    <a class="right" href="https://github.com/Lorti/webgl-3d-model-viewer-using-three.js" target="_top">
+        <img src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67">
+    </a>
+
     <script>
 
         if (!Detector.webgl) {
@@ -72,6 +71,7 @@
         var container;
 
         var camera, controls, scene, renderer;
+        var lighting, ambient, keyLight, fillLight, backLight;
 
         var windowHalfX = window.innerWidth / 2;
         var windowHalfY = window.innerHeight / 2;
@@ -92,21 +92,19 @@
             /* Scene */
 
             scene = new THREE.Scene();
+            lighting = false;
 
-            var ambient = new THREE.AmbientLight(0xffffff, 0.25);
+            ambient = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambient);
 
-            var keyLight = new THREE.DirectionalLight(0xfff2e5, 1.0);
+            keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
             keyLight.position.set(-100, 0, 100);
-            scene.add(keyLight);
 
-            var fillLight = new THREE.DirectionalLight(0xe5e5ff, 0.5);
+            fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
             fillLight.position.set(100, 0, 100);
-            scene.add(fillLight);
 
-            var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            backLight = new THREE.DirectionalLight(0xffffff, 1.0);
             backLight.position.set(100, 0, -100).normalize();
-            scene.add(backLight);
 
             /* Model */
 
@@ -150,6 +148,7 @@
             /* Events */
 
             window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener('keydown', onKeyboardEvent, false);
 
         }
 
@@ -162,6 +161,32 @@
             camera.updateProjectionMatrix();
 
             renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function onKeyboardEvent(e) {
+
+            if (e.code === 'KeyL') {
+
+                lighting = !lighting;
+
+                if (lighting) {
+
+                    ambient.intensity = 0.25;
+                    scene.add(keyLight);
+                    scene.add(fillLight);
+                    scene.add(backLight);
+
+                } else {
+
+                    ambient.intensity = 1.0;
+                    scene.remove(keyLight);
+                    scene.remove(fillLight);
+                    scene.remove(backLight);
+
+                }
+
+            }
 
         }
 
