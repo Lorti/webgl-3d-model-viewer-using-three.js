@@ -125,6 +125,14 @@
 
                     scene.add(object);
 
+                    // Load a different texture and swap after 3 seconds.
+                    var txtLoader = new THREE.TextureLoader();
+                    txtLoader.load('assets/female-croupier-2013-03-26.inverted.png', function (texture) {
+                        setTimeout(function () {
+                            materials.materials.default.map = texture;
+                        }, 3000);
+                    });
+
                 });
 
             });
